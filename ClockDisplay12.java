@@ -17,7 +17,9 @@ public class ClockDisplay12
 {
     private NumberDisplay hours;
     private NumberDisplay minutes;
-    private String displayString;    // simulates the actual display
+    private String displayString;  
+    private String meridian; //for am pm
+    // simulates the actual display
     
     /**
      * Constructor for ClockDisplay12 objects. This constructor 
@@ -27,6 +29,7 @@ public class ClockDisplay12
     {
         hours = new NumberDisplay(12); //changed to 12
         minutes = new NumberDisplay(60);
+        meridian = "am"; 
         updateDisplay();
     }
 
@@ -35,11 +38,11 @@ public class ClockDisplay12
      * creates a new clock set at the time specified by the 
      * parameters.
      */
-    public ClockDisplay12(int hour, int minute)
+    public ClockDisplay12(int hour, int minute, String ampm)
     {
         hours = new NumberDisplay(12); //changed to 12
         minutes = new NumberDisplay(60);
-        setTime(hour, minute);
+        setTime(hour, minute, ampm);
     }
 
     /**
@@ -47,22 +50,45 @@ public class ClockDisplay12
      * the clock display go one minute forward.
      */
     public void timeTick()
-    {
+        {
         minutes.increment();
-        if(minutes.getValue() == 0) {  // it just rolled over!
+        
+        if(minutes.getValue() == 0) { 
+            // it just rolled over!
             hours.increment();
+             
+        if(hours.getValue()==12) 
+        { 
+            meridian = "pm";
         }
+        else 
+        {
+            meridian = "am";
+        }
+    }
+    if (hours.getValue() == 0)
+    {
+        hours.setValue(1);
+    }
+     
         updateDisplay();
     }
+    
 
     /**
      * Set the time of the display to the specified hour and
      * minute.
      */
-    public void setTime(int hour, int minute)
+    public void setTime(int hour, int minute, String ampm)
     {
+        if (hour == 0)
+        {
+            hour = 12;
+        }
+        
         hours.setValue(hour);
         minutes.setValue(minute);
+        meridian = ampm;
         updateDisplay();
     }
 
@@ -80,8 +106,8 @@ public class ClockDisplay12
     private void updateDisplay()
     {
         if (hours.getValue()==0)
-        displayString = "12"+ ":" + minutes.getDisplayValue(); //formats that hour that is 00, turns to 12
+        displayString = "12"+ ":" + minutes.getDisplayValue() + meridian; //formats that hour that is 00, turns to 12
         else
-        displayString = hours.getDisplayValue() + ":" + minutes.getDisplayValue(); //if not 0  
+        displayString = hours.getDisplayValue() + ":" + minutes.getDisplayValue() + meridian; //if not 0  
     }
 }

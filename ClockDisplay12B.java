@@ -17,7 +17,8 @@ public class ClockDisplay12B //ClockDisplay12B shows hours on 12 hr increments b
 {
     private NumberDisplay hours;
     private NumberDisplay minutes;
-    private String displayString;    // simulates the actual display
+    private String displayString; //simulates the actual display
+    private String meridian;
     
     /**
      * Constructor for ClockDisplay12B objects. This constructor 
@@ -27,6 +28,7 @@ public class ClockDisplay12B //ClockDisplay12B shows hours on 12 hr increments b
     {
         hours = new NumberDisplay(24); //keep the storage to say 24 so it can store the value as 24
         minutes = new NumberDisplay(60);
+        meridian = "am"; 
         updateDisplay();
     }
 
@@ -35,23 +37,40 @@ public class ClockDisplay12B //ClockDisplay12B shows hours on 12 hr increments b
      * creates a new clock set at the time specified by the 
      * parameters.
      */
-    public ClockDisplay12B(int hour, int minute)
+    public ClockDisplay12B(int hour, int minute, String ampm)
     {
         hours = new NumberDisplay(24); // keeps the storage to say 24 
         minutes = new NumberDisplay(60);
-        setTime(hour, minute);
+        meridian = "am"; 
+        setTime(hour, minute, ampm);
     }
 
     /**
      * This method should get called once every minute - it makes
      * the clock display go one minute forward.
      */
-    public void timeTick()
-    {
+     public void timeTick()
+        {
         minutes.increment();
-        if(minutes.getValue() == 0) {  // it just rolled over!
+        
+        if(minutes.getValue() == 0) { 
+            // it just rolled over!
             hours.increment();
+             
+        if(hours.getValue()==12) 
+        { 
+            meridian = "pm";
         }
+        else 
+        {
+            meridian = "am";
+        }
+    }
+    if (hours.getValue() == 0)
+    {
+        hours.setValue(1);
+    }
+     
         updateDisplay();
     }
 
@@ -59,10 +78,11 @@ public class ClockDisplay12B //ClockDisplay12B shows hours on 12 hr increments b
      * Set the time of the display to the specified hour and
      * minute.
      */
-    public void setTime(int hour, int minute)
+    public void setTime(int hour, int minute, String ampm)
     {
         hours.setValue(hour);
         minutes.setValue(minute);
+        meridian = "am"; 
         updateDisplay();
     }
 
@@ -81,20 +101,20 @@ public class ClockDisplay12B //ClockDisplay12B shows hours on 12 hr increments b
     {
         if (hours.getValue() == 0)  
         {
-            displayString = "12"+ ":" + minutes.getDisplayValue();  // loop adds 12 if hour value is 0
+            displayString = "12"+ ":" + minutes.getDisplayValue() + meridian;  // loop adds 12 if hour value is 0
         }   
         
         if (hours.getValue() > 12 )   //loop subtracts 12 if hours are more than 12 
         {
            int hoursare = hours.getValue() - 12; 
-           displayString = hoursare + ":" + minutes.getDisplayValue();
+           displayString = hoursare + ":" + minutes.getDisplayValue() +meridian;
             
            
         }  
         
         if (hours.getValue() < 13 ) // loop displays value without any edit if the value is less than 13
         { 
-        displayString = hours.getDisplayValue() +":" + minutes.getDisplayValue(); 
+        displayString = hours.getDisplayValue() +":" + minutes.getDisplayValue() + meridian; 
         } 
         
        
